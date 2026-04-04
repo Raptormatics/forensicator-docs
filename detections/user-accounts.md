@@ -144,4 +144,3 @@ Local groups are a primary mechanism for managing permissions. Attackers often t
 - **Suspicious Group Names:** Attackers may create a new local group with a deceptive name to try and blend in.
 - **Investigation Steps**
 A full investigation requires enumerating the members of each sensitive group to ensure only authorized accounts are included. This data provides the necessary context for that deeper analysis.
-
