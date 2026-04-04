@@ -1,0 +1,96 @@
+[
+  {
+    "title": "Current User Information",
+    "summary": "This section identifies the user context in which the Forensicator script was executed. It typically includes a username, domain/hostname, and a User UUID or Security Identifier (SID).",
+    "why_it_matters": "Identifying the user context is fundamental to digital forensics. It establishes a baseline of activity and helps attribute actions on the system to a specific account. Establishes Context: Links system activity, file modifications, and network connections to a specific user account. Scope of Compromise: Understanding if the script was run as a standard user or an administrator helps define the scope of visibility and potential compromise.",
+    "what_to_look_for": [
+      "Is the user account a standard user, an administrator, or a system/service account?",
+      "Is the user a local account or a domain-joined account? This provides clues about the environment (standalone vs. corporate).",
+      "The unique identifier can be used to track the user's activity across other logs and artifacts."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "System Details",
+    "summary": "This section provides a snapshot of the system's identity, including its name, domain/workgroup, and basic hardware information.",
+    "why_it_matters": "While not directly about user accounts, system details provide critical context for any investigation. Asset Identification: Confirms the evidence was collected from the correct machine. Environment Context: Indicates whether the system is part of a corporate domain, which might imply centralized management and logging, or a standalone workgroup, which may have less stringent security.",
+    "what_to_look_for": [],
+    "mitre_attack": []
+  },
+  {
+    "title": "Logon Sessions",
+    "summary": "This section displays active and recent user logon sessions, including the username, session type (e.g., console, RDP), and logon time.",
+    "why_it_matters": "Logon sessions are a primary target for analysis to detect unauthorized access, lateral movement, and persistence.",
+    "what_to_look_for": [
+      "Extremely long idle times can indicate a forgotten-but-active session or a dormant attacker foothold.",
+      "Remote logins (RDP) on systems that should not have them enabled are a major red flag.",
+      "An single user with multiple, concurrent sessions could be normal, or it could indicate session hijacking or unauthorized multi-tasking.",
+      "Logins occurring outside of normal business hours should be scrutinized.",
+      "Sessions from service accounts, disabled accounts, or unrecognized users are highly suspicious."
+    ],
+    "mitre_attack": [
+      {
+        "tactic": "T1078",
+        "description": "Valid Accounts: Attackers use legitimate credentials to establish and maintain access."
+      },
+      {
+        "tactic": "T1021",
+        "description": "Remote Services: Remote logon sessions can be indicative of lateral movement."
+      }
+    ]
+  },
+  {
+    "title": "User Processes",
+    "summary": "This section lists processes running under the context of specific users, including system and service accounts.",
+    "why_it_matters": "Analyzing running processes is crucial for detecting malware, unauthorized software, and \"living-off-the-land\" techniques where attackers abuse legitimate system tools.",
+    "what_to_look_for": [
+      "Scrutinize processes running as `NT AUTHORITY\\SYSTEM` or `root`. Attackers aim to execute code with the highest privileges.",
+      "Processes running from non-standard locations (e.g., `C:\\Windows\\Temp`, `/tmp`, `AppData`, user download folders) are suspicious. Legitimate software usually runs from `Program Files` or `System32`.",
+      "Unusually high CPU or memory usage can indicate malicious activity like crypto-mining or data exfiltration.",
+      "Look for common process names that are slightly misspelled (e.g., `svch0st.exe`)."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "User Profiles",
+    "summary": "This section lists user profiles on the system, their unique Security Identifiers (SIDs), and their last usage timestamp.",
+    "why_it_matters": "User profiles contain a wealth of forensic data and can reveal all accounts that have ever been used on the system.",
+    "what_to_look_for": [
+      "The existence of a user profile that cannot be explained or is not authorized is a sign of a breach.",
+      "A dormant or old profile that suddenly becomes active is a major red flag for account compromise. Conversely, the timestamp can help establish a timeline of when a user was last active.",
+      "The location of the user profile folder is typically standardized. Non-standard paths could indicate an attempt to hide a profile."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "Administrator Accounts",
+    "summary": "This section lists all accounts that are members of the local `Administrators` group.",
+    "why_it_matters": "Administrator accounts are the \"keys to the kingdom.\" Compromise of any one of these accounts can lead to a full system compromise.",
+    "what_to_look_for": [
+      "The principle of least privilege dictates that the number of admin accounts should be minimal. Every additional admin account increases the attack surface.",
+      "The default, built-in `Administrator` account should typically be disabled. If it is enabled, its purpose should be justified and its password exceptionally strong.",
+      "User accounts used for daily tasks (email, web browsing) should not have administrative privileges."
+    ],
+    "mitre_attack": [
+      {
+        "tactic": "T1078.003",
+        "description": "Valid Accounts: Local Accounts: The abuse of local administrator accounts is a common technique for privilege escalation and persistence."
+      }
+    ]
+  },
+  {
+    "title": "Local Groups",
+    "summary": "This table lists the local user groups configured on the machine and their purpose.",
+    "why_it_matters": "Local groups are a primary mechanism for managing permissions. Attackers often target group memberships to escalate privileges.",
+    "what_to_look_for": [
+      "Scrutinize the membership of powerful groups beyond just `Administrators`. These include:",
+      "Remote Desktop Users: Allows remote login.",
+      "Backup Operators: Can bypass file system permissions.",
+      "Power Users: A legacy group that can grant extensive, often unexpected, permissions.",
+      "Identify any custom-created groups. Understand their intended purpose and verify their membership.",
+      "Attackers may create a new local group with a deceptive name to try and blend in.",
+      "A full investigation requires enumerating the members of each sensitive group to ensure only authorized accounts are included. This data provides the necessary context for that deeper analysis."
+    ],
+    "mitre_attack": []
+  }
+]

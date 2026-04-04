@@ -1,0 +1,75 @@
+[
+  {
+    "title": "Group Policy Report (GPOReport.html)",
+    "summary": "This artifact is an HTML report detailing the Group Policy Objects (GPOs) applied to the user and computer. GPOs are used by administrators to enforce security settings, deploy software, and manage the operating environment.",
+    "why_it_matters": "GPO settings dictate the security posture of the system. Attackers may attempt to modify GPOs to weaken security controls. Analyzing the GPO report helps an investigator understand the intended security configuration and identify any deviations or weak settings that could be exploited.",
+    "what_to_look_for": [
+      "Look for policies that don't enforce password complexity, length, or history.",
+      "Identify policies that grant excessive privileges to standard users (e.g., \"Log on as a service,\" \"Debug programs\").",
+      "Check for GPOs that modify the host firewall to allow unexpected traffic.",
+      "Look for policies that disable security features like Windows Defender, logging, or UAC (User Account Control)."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "WINPMEM RAM CAPTURE (/RAM)",
+    "summary": "This artifact is a full memory dump (RAM capture) of the live system, typically captured using tools like WinPmem.",
+    "why_it_matters": "A memory dump is one of the most valuable artifacts in digital forensics. It contains a snapshot of everything running on the system at the time of capture, including active processes, network connections, loaded drivers, and potentially even decrypted data, passwords, or encryption keys. It is essential for detecting fileless malware that runs only in memory and leaves few traces on the hard disk.",
+    "what_to_look_for": [
+      "This artifact cannot be analyzed directly in a text editor. It requires specialized memory forensics tools like Volatility or Rekall.",
+      "Use memory analysis tools to list all running processes and compare them against disk-based artifacts.",
+      "Look for signs of process hollowing, DLL injection, or other code injection techniques.",
+      "Extract active and recent network connections to identify potential C2 communications.",
+      "Volatility can be used to see registry keys as they existed in memory.",
+      "It is sometimes possible to extract cleartext passwords or password hashes from memory."
+    ],
+    "mitre_attack": [
+      {
+        "tactic": "T1003",
+        "description": "OS Credential Dumping: Memory dumps can contain credentials."
+      },
+      {
+        "tactic": "T1057",
+        "description": "Process Discovery: Analyzing memory is a key way to discover running processes."
+      }
+    ]
+  },
+  {
+    "title": "Browsing History Dump (/BROWSING_HISTORY)",
+    "summary": "This artifact is a collection of browsing history, cache, and download records from various web browsers installed on the system (e.g., Chrome, Firefox, Edge).",
+    "why_it_matters": "Browser history provides a clear timeline of a user's web activity. It can reveal how a compromise occurred (e.g., visiting a malicious website, downloading a trojan), identify phishing attempts, and uncover data exfiltration to cloud storage sites.",
+    "what_to_look_for": [
+      "Look for visits to known malicious or suspicious websites.",
+      "Analyze the list of downloaded files. Pay close attention to executables (`.exe`, `.msi`) or script files downloaded from untrusted sources.",
+      "Identify visits to sites that mimic legitimate login pages.",
+      "Note any access to personal webmail or cloud storage sites, as these are common channels for data exfiltration."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "Network Trace (/PCAP)",
+    "summary": "This is a network packet capture (`.pcap` or `.etl` file) that contains a recording of the raw network traffic to and from the machine for a period of time.",
+    "why_it_matters": "A packet capture provides the most granular level of detail about network communications. It allows an investigator to reconstruct conversations, extract files, and analyze protocol-level details that are not visible in a simple list of network connections.",
+    "what_to_look_for": [
+      "This artifact requires specialized tools like Wireshark or tcpdump for analysis.",
+      "Look for sensitive data being transmitted over unencrypted protocols like HTTP, FTP, or Telnet.",
+      "Identify regular, periodic connections to an external IP address, which may indicate command-and-control beaconing.",
+      "Look for large outbound data flows to unexpected destinations.",
+      "Analyze DNS requests to spot queries for malicious domains.",
+      "Inspect the content of packets for malicious scripts, exploits, or file transfers."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "Other Collections",
+    "summary": "This section covers other bulk data collection modules that may be triggered based on the Forensicator configuration.",
+    "why_it_matters": "These provide deeper, more specific context for certain types of investigations.",
+    "what_to_look_for": [
+      "EVENT LOGS (/EVTXLOGS): A full backup of the Windows Event Logs. This is invaluable for deep timeline analysis, tracking user logons, process creation, and system errors.",
+      "IIS Logs (/IISLogs): If the system is a web server, these logs contain a record of every HTTP request made to the server, essential for investigating web-based attacks.",
+      "Discovered Log4j (/LOG4J): The output of a scan for systems vulnerable to the Log4j vulnerability.",
+      "Matched Hashes (/HashMatches): If a file hashing module is run, this will contain a list of files on the system that matched a list of known-bad hashes. This is a very strong indicator of compromise."
+    ],
+    "mitre_attack": []
+  }
+]

@@ -4,7 +4,7 @@ This document provides a general guide for analyzing user accounts, logon sessio
 
 ---
 
-### 🔑 Current User Information {#current-user-information}
+### 🔑 Current User Information
 
 **🧾 Summary**
 
@@ -25,7 +25,7 @@ Identifying the user context is fundamental to digital forensics. It establishes
 
 ---
 
-### 🖥️ System Details {#system-details}
+### 🖥️ System Details
 
 **🧾 Summary**
 
@@ -40,7 +40,7 @@ While not directly about user accounts, system details provide critical context 
 
 ---
 
-### 🔐 Logon Sessions {#logon-sessions}
+### 🔐 Logon Sessions
 
 **🧾 Summary**
 
@@ -65,7 +65,7 @@ Logon sessions are a primary target for analysis to detect unauthorized access, 
 
 ---
 
-### 🏃 User Processes {#user-processes}
+### 🏃 User Processes
 
 **🧾 Summary**
 
@@ -84,7 +84,7 @@ Analyzing running processes is crucial for detecting malware, unauthorized softw
 
 ---
 
-### 👤 User Profiles {#user-profiles}
+### 👤 User Profiles
 
 **🧾 Summary**
 
@@ -102,7 +102,7 @@ User profiles contain a wealth of forensic data and can reveal all accounts that
 
 ---
 
-### 🛡️ Administrator Accounts {#administrator-accounts}
+### 🛡️ Administrator Accounts
 
 **🧾 Summary**
 
@@ -124,7 +124,7 @@ Administrator accounts are the "keys to the kingdom." Compromise of any one of t
 
 ---
 
-### 👥 Local Groups {#local-groups}
+### 👥 Local Groups
 
 **🧾 Summary**
 

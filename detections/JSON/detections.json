@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Sigma Rules",
+    "summary": "This section displays matches from Sigma, a generic signature format for SIEM systems that can be used to describe log events. Forensicator uses a set of Sigma rules to scan event logs for known malicious or suspicious patterns of activity.",
+    "why_it_matters": "Sigma is a powerful, open standard for detecting attacker techniques. A Sigma match is a high-confidence indicator of compromise that directly points to a specific behavior seen on the system, such as a particular command being run or a specific type of authentication event.",
+    "what_to_look_for": [
+      "The rule title gives a clear description of the detected activity (e.g., \"Suspicious PowerShell Command\"). The `Level` (e.g., critical, high, medium) indicates the severity and confidence of the finding.",
+      "These tags map the detected behavior directly to a known attacker tactic or technique in the MITRE ATT&CK framework, providing immediate context for the alert.",
+      "The log entry that triggered the match provides the raw data. Pay close attention to:",
+      "User: Who performed the action?",
+      "Process: What program was used?",
+      "CommandLine / ScriptBlock: What specific command or script was executed? This is often where the most incriminating evidence is found."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "Ransomware Artifacts",
+    "summary": "This group of checks looks for common indicators of ransomware activity, such as ransom notes, known file extensions, and attempts to delete volume shadow copies.",
+    "why_it_matters": "These are direct, high-confidence indicators of a ransomware infection. Early detection of these artifacts is critical for response.",
+    "what_to_look_for": [
+      "The presence of a file on disk that matches the text of a known ransom note is a definitive sign of compromise.",
+      "The module checks for files that have been renamed with file extensions used by known ransomware families (e.g., `.lockbit`, `.crypted`).",
+      "Ransomware encrypts files, and encrypted data has very high entropy (randomness). This check flags files with abnormally high entropy, which could be encrypted files. This is a strong, though not definitive, indicator.",
+      "Ransomware's first step after infection is often to delete volume shadow copies to prevent the victim from easily recovering their files. This check looks for the specific commands used to perform this action (e.g., using `vssadmin.exe` or `wmic.exe`)."
+    ],
+    "mitre_attack": [
+      {
+        "tactic": "T1486",
+        "description": "Data Encrypted for Impact: The core ransomware tactic."
+      },
+      {
+        "tactic": "T1490",
+        "description": "Inhibit System Recovery: The technique of deleting shadow copies to hamper recovery efforts."
+      }
+    ]
+  },
+  {
+    "title": "Malicious Hash Check",
+    "summary": "This module calculates the cryptographic hash (MD5, SHA256) of files on the system and compares them against a list of known-malicious file hashes.",
+    "why_it_matters": "A hash match is a definitive indicator that a specific, known-malicious file is present on the system. Because cryptographic hashes are unique, this method provides a very high-confidence detection with virtually no false positives.",
+    "what_to_look_for": [
+      "Any file that gets a hit from this module should be treated as malicious.",
+      "File Details: Once a match is found, pivot to the other details provided:",
+      "File: The full path to the malicious file. This tells you where the malware is located.",
+      "Owner: Who owns the file.",
+      "Timestamps: `Created` and `Last Modified` dates are crucial for building a timeline of the infection."
+    ],
+    "mitre_attack": []
+  }
+]

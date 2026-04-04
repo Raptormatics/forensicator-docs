@@ -1,0 +1,59 @@
+[
+  {
+    "title": "Installed Programs",
+    "summary": "This section lists all installed applications, typically pulled from the system's package management database or registry. It includes details like program name, version, vendor, and installation date.",
+    "why_it_matters": "An inventory of installed software is crucial for identifying unauthorized applications, outdated and vulnerable software, and tools that could be used by an attacker. Detect Unauthorized Software: Find tools that violate policy or have no business being on the system (e.g., password crackers, network sniffers, torrent clients). Identify Vulnerable Applications: Pinpoint outdated software with known CVEs that could serve as an entry point for attackers. \"Living-off-the-Land\" Binaries (LOLBins): Some legitimate tools can be abused by attackers. Knowing they are present helps assess risk.",
+    "what_to_look_for": [
+      "Scrutinize software from untrusted or unknown publishers.",
+      "Look for software installed around the suspected time of a compromise.",
+      "Identify legitimate administrative or security tools (e.g., `Nmap`, `Wireshark`, `PowerShell`) that could also be used maliciously.",
+      "Compare software versions against vulnerability databases to identify unpatched applications."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "Environment Variables",
+    "summary": "This section displays the system and user environment variables, which define paths, temporary directories, and other system-wide settings.",
+    "why_it_matters": "Environment variables can be manipulated by attackers to alter system behavior, redirect execution flows, or achieve persistence.",
+    "what_to_look_for": [
+      "Attackers may add a directory they control to the start of the `Path` variable to hijack calls to legitimate binaries (e.g., `powershell.exe`).",
+      "The `TEMP` and `TMP` variables might point to attacker-controlled locations.",
+      "Look for unusual scripts or commands set to run via variables like `PSModulePath` or other application-specific variables.",
+      "In rare, misconfigured cases, sensitive data or credentials might be stored in environment variables."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "Operating System Information",
+    "summary": "This section provides detailed information about the operating system, including its name, version, build number, installation date, and last boot time.",
+    "why_it_matters": "This information is essential for context and vulnerability assessment. Vulnerability Management: The OS version and build number are critical for determining if the system is patched and up-to-date. Timeline Analysis: The `InstallDate` and `LastBootupTime` are key timestamps for building a forensic timeline of events. An unexpected reboot could be a sign of a crash, a malicious update, or an attempt to finalize an installation.",
+    "what_to_look_for": [
+      "An unpatched OS is a major security risk.",
+      "Compare the last boot time with system event logs to ensure it matches expected behavior."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "Hotfixes (Patches)",
+    "summary": "This section lists the specific security updates and hotfixes (KBs on Windows) that have been installed on the system.",
+    "why_it_matters": "A list of installed hotfixes provides a granular view of the system's patch level. It helps verify if specific, critical security patches have been applied.",
+    "what_to_look_for": [
+      "Compare the list of installed hotfixes against recent, critical security advisories (e.g., patches for zero-day exploits).",
+      "Note the dates when patches were applied. A long gap with no updates is a sign of a poorly maintained and vulnerable system.",
+      "While not always shown here, this data can be a starting point to check system logs for evidence of failed patch installations."
+    ],
+    "mitre_attack": []
+  },
+  {
+    "title": "Windows Defender Status",
+    "summary": "This section provides the status of the built-in antivirus and anti-malware solution on Windows systems.",
+    "why_it_matters": "This is a quick check to see if the system's primary defenses are active and functioning correctly. An attacker's first move is often to disable security tools.",
+    "what_to_look_for": [
+      "If any of `AMServiceEnabled`, `AntivirusEnabled`, `RealTimeProtectionEnabled` are `False`, it is a critical finding. It means the system's primary defenses are disabled.",
+      "Check if the antivirus signatures are recent. Out-of-date signatures will not protect against the latest threats.",
+      "This should be `Normal`. Any other state (like \"Passive Mode\" or \"EDR Block Mode\") should be correlated with the presence of other security products.",
+      "This is a key feature for detecting fileless attacks and suspicious script behavior. It should be `True`."
+    ],
+    "mitre_attack": []
+  }
+]
